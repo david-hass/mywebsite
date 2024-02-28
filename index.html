@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./output.css">
+  <title>Vite App</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .blinking-cursor {
+      caret-color: red;
+    }
+  </style>
+</head>
+
+
+<body>
+  <div class="absolute inset-0 z-50">
+    <div class="relative w-full h-full">
+      <div class="absolute w-1/3">
+        <div class="shadow-lg text-gray-100 text-sm font-mono subpixel-antialiased bg-gray-800">
+
+          <div class="w-full flex justify-end">
+            <div class="mr-2 mt-1 flex">
+              <div class="h-3 w-3 bg-green-500 rounded-full"></div>
+              <div class="ml-2 h-3 w-3 bg-orange-300 rounded-full"></div>
+              <div class="ml-2 h-3 w-3 bg-red-500 rounded-full"></div>
+            </div>
+          </div>
+
+          <div contenteditable="plaintext-only" data-terminal class="my-3 resize-none outline-none whitespace-pre"></div>
+
+          <div class="grid grid-cols-12 font-extrabold">
+            <div class="px-2 col-span-2 bg-gray-500 text-gray-300 text-center">NORMAL</div>
+            <div class="px-2 col-span-8 bg-red-400">index.html</div>
+            <div data-cursor-position class="px-2 col-span-2 bg-gray-500 text-gray-300 text-center"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <canvas data-particles class="fixed"></canvas>
+</body>
+<script type="module" src="/src/particles.ts"></script>
+<script type="module" src="/src/terminal.ts"></script>
+
+</html>
