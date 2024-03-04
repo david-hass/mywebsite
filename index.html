@@ -38,10 +38,10 @@
             </div>
           </div>
 
-          <div contenteditable="plaintext-only" data-terminal class="my-3 resize-none outline-none whitespace-pre"></div>
+          <canvas tabindex="0" data-terminal class="my-3 outline-none"></canvas>
 
           <div class="grid grid-cols-12 font-extrabold">
-            <div class="px-2 col-span-2 bg-gray-500 text-gray-300 text-center">NORMAL</div>
+            <div data-editor-mode class="px-2 col-span-2 bg-gray-500 text-gray-300 text-center">NORMAL</div>
             <div class="px-2 col-span-8 bg-red-400">index.html</div>
             <div data-cursor-position class="px-2 col-span-2 bg-gray-500 text-gray-300 text-center"></div>
           </div>
@@ -50,9 +50,8 @@
 
     </div>
   </div>
-  <canvas data-particles class="fixed"></canvas>
+  <canvas data-particles class="fixed outline-none"></canvas>
 </body>
-<script type="module" src="/src/particles.ts"></script>
-<script type="module" src="/src/terminal.ts"></script>
+<script defer type="module" src="/src/main.ts"></script>
 
 </html>

@@ -1,24 +1,16 @@
+import { requestAnimationFrame } from "./util"
+
 type Dimensions = [number, number]
 
 type Particle = { positions: [number, number], velocity: [number, number], radius: number }
 
-type ParticlesOptions = { numberOfParticles?: number, maxVelocity?: number, maxRadius?: number }
+type Options = { numberOfParticles?: number, maxVelocity?: number, maxRadius?: number }
 
 const elementOffsetDimensions = (el: HTMLElement): Dimensions => [el.offsetWidth, el.offsetHeight]
 
 const canvasDimensions = ([w, h]: Dimensions, dpr: number) => <Dimensions>[w * dpr, h * dpr]
 
 const pixels = (num: number) => num + "px"
-
-const animationLoop = (cb: () => boolean) => {
-  const loop = () => {
-    const stop = cb();
-    if (stop) return
-    requestAnimationFrame(loop);
-  };
-
-  requestAnimationFrame(loop);
-};
 
 const randomParticles = (cnt: number, maxDim: Dimensions, maxVel: number, maxR: number): Generator<Particle, void> => (function*() {
   let i = 0;
@@ -48,7 +40,7 @@ const updatedParticle = (p: Particle, [maxW, maxH]: Dimensions): Particle => {
   }
 }
 
-const renderableParticles = (particles: Array<Particle>): Array<(ctx: CanvasRenderingContext2D) => void> =>
+const particleRenderers = (particles: Array<Particle>): Array<(ctx: CanvasRenderingContext2D) => void> =>
   particles.map((p) => renderableParticle(p))
 
 const renderableParticle = ({ positions: [x, y], radius }: Particle) => (ctx: CanvasRenderingContext2D) => {
@@ -60,12 +52,12 @@ const renderableParticle = ({ positions: [x, y], radius }: Particle) => (ctx: Ca
 
 
 
-function particlesMain(options: ParticlesOptions = {}) {
+export function main(options: Options = {}) {
   const cnvs = document.querySelector("[data-particles]") as HTMLCanvasElement
-  if (!cnvs) return "no canvas element"
+  if (!cnvs) return "no particles canvas element"
   const cnvsParent = cnvs.parentElement
   if (!cnvsParent) return "no canvas parent element"
-  const cnvsContext = cnvs.getContext("2d")
+  const cnvsContext = <CanvasRenderingContext2D>cnvs.getContext("2d")
   if (!cnvsContext) return "no canvas context"
 
   const { numberOfParticles = 50, maxVelocity = 1.11, maxRadius = 10 } = options
@@ -85,19 +77,19 @@ function particlesMain(options: ParticlesOptions = {}) {
 
   cnvsContext.scale(dpr, dpr);
 
-  let particles = Array.from(randomParticles(numberOfParticles, [cnvsWidth, cnvsHeight], maxVelocity, maxRadius))
+  const initParticles = Array.from(randomParticles(numberOfParticles, [cnvsWidth, cnvsHeight], maxVelocity, maxRadius))
 
-  animationLoop(() => {
+
+  function loop(particles: Array<Particle>) {
     cnvsContext.clearRect(0, 0, cnvsWidth, cnvsHeight)
 
-    particles = updatedParticles(particles, [cnvsWidth, cnvsHeight])
+    const newParticles = updatedParticles(particles, [cnvsWidth, cnvsHeight])
 
-    renderableParticles(particles).forEach((r) => r(cnvsContext))
+    particleRenderers(particles).forEach((r) => r(cnvsContext))
 
-    return false
-  });
+    requestAnimationFrame(() => loop(newParticles))
+  }
 
+  loop(initParticles)
 }
-const particlesMainErr = particlesMain()
-if (particlesMainErr)
-  console.error("ERR: ", particlesMainErr)
+
