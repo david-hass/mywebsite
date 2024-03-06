@@ -1,16 +1,8 @@
-import { requestAnimationFrame } from "./util"
-
-type Dimensions = [number, number]
+import { Dimensions, requestAnimationFrame, resizeCanvas } from "./util"
 
 type Particle = { positions: [number, number], velocity: [number, number], radius: number }
 
 type Options = { numberOfParticles?: number, maxVelocity?: number, maxRadius?: number }
-
-const elementOffsetDimensions = (el: HTMLElement): Dimensions => [el.offsetWidth, el.offsetHeight]
-
-const canvasDimensions = ([w, h]: Dimensions, dpr: number) => <Dimensions>[w * dpr, h * dpr]
-
-const pixels = (num: number) => num + "px"
 
 const randomParticles = (cnt: number, maxDim: Dimensions, maxVel: number, maxR: number): Generator<Particle, void> => (function*() {
   let i = 0;
@@ -62,23 +54,9 @@ export function main(options: Options = {}) {
 
   const { numberOfParticles = 50, maxVelocity = 1.11, maxRadius = 10 } = options
 
-
-  const dpr = window.devicePixelRatio ?? 1
-
-  const cnvsParrentOffsetDim: Dimensions = elementOffsetDimensions(cnvsParent)
-
-  const [cnvsWidth, cnvsHeight] = canvasDimensions(cnvsParrentOffsetDim, dpr)
-
-  cnvs.width = cnvsWidth
-  cnvs.height = cnvsHeight
-
-  cnvs.style.width = pixels(cnvsWidth)
-  cnvs.style.height = pixels(cnvsHeight)
-
-  cnvsContext.scale(dpr, dpr);
+  const [cnvsWidth, cnvsHeight] = resizeCanvas(window, cnvsContext, cnvs, cnvsParent)
 
   const initParticles = Array.from(randomParticles(numberOfParticles, [cnvsWidth, cnvsHeight], maxVelocity, maxRadius))
-
 
   function loop(particles: Array<Particle>) {
     cnvsContext.clearRect(0, 0, cnvsWidth, cnvsHeight)
